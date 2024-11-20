@@ -36,7 +36,7 @@ GRAMMAR_FILE = $(GRAMMAR_DIR)/prolog.g4
 all: $(TARGET)
 
 $(TARGET): BUILD_DIRS $(OBJ_FILES) $(LEXER_OBJ) $(PARSER_OBJ)
-	$(brief) $(CXX) $(OBJ_DIR)/*.o $(LINK_FLAGS) -o $(TARGET)
+	$(brief) $(CXX) $(OBJ_FILES) $(LEXER_OBJ) $(PARSER_OBJ) $(LINK_FLAGS) -o $(TARGET)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp ANTLR_HEADERS
 	$(brief) $(CXX) $(CXXFLAGS) $(INCLUDE_DIRS) -c $< -o $@
