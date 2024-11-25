@@ -110,8 +110,9 @@ BUILD_DIRS:
 clean:
 	$(brief)
 	$(verb) rm -rf $(BUILD_DIR)/* $(TARGET)
+	$(verb) rm -rf $(TEST_DIR)/output*
 
 .PHONY: test
 test:
 	echo "Running tests..."
-	# Add your test runner commands here, e.g., GoogleTest
+	python3 run_tests.py

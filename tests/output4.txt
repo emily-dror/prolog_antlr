@@ -1,0 +1,1 @@
+(p_text (clause (term (atom has) ( (termlist term)) <missing '.'>) <EOF>)
