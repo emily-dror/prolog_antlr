@@ -114,5 +114,6 @@ clean:
 
 .PHONY: test
 test:
-	echo "Running tests..."
-	python3 run_tests.py
+	$(verb) rm -rf $(TEST_DIR)/output*
+	$(verb) echo "Running tests..."
+	$(verb) python3 run_tests.py
