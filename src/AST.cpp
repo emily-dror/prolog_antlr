@@ -12,7 +12,6 @@ int main(int argc, const char* argv[]) {
         std::cerr << "Usage: " << argv[0] << " <input-file>" << std::endl;
         return 1;
     }
-
     // Open input file
     std::ifstream inputFile(argv[1]);
     if (!inputFile) {

@@ -55,6 +55,7 @@ BUILD_DIR := $(ROOT)/build
 GRAMMAR_DIR := $(ROOT)/grammar
 INCLUDE_DIRS := \
     -I $(ROOT)/include \
+	-I $(ROOT)/include/prolog_antlr \
     -I $(ROOT)/include/antlr4-runtime \
 	-I $(BUILD_DIR)/include
 
