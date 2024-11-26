@@ -3,4 +3,3 @@
 prolog_parser
 /.cache/
 build.out
-compile_commands.json

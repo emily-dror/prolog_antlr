@@ -1,0 +1,62 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/clang++",
+      "-Wall",
+      "-std=c++17",
+      "-I",
+      "./include",
+      "-I",
+      "./include/antlr4-runtime",
+      "-I",
+      "./build/include",
+      "-c",
+      "-o",
+      "build/obj/AST.o",
+      "src/AST.cpp"
+    ],
+    "directory": "/Users/mohamadessa/Developer/Git/Projects/prolong_antlr",
+    "file": "/Users/mohamadessa/Developer/Git/Projects/prolong_antlr/src/AST.cpp",
+    "output": "/Users/mohamadessa/Developer/Git/Projects/prolong_antlr/build/obj/AST.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/clang++",
+      "-Wall",
+      "-std=c++17",
+      "-I",
+      "./include",
+      "-I",
+      "./include/antlr4-runtime",
+      "-I",
+      "./build/include",
+      "-c",
+      "-o",
+      "build/obj/prologLexer.o",
+      "./build/./grammar/prologLexer.cpp"
+    ],
+    "directory": "/Users/mohamadessa/Developer/Git/Projects/prolong_antlr",
+    "file": "/Users/mohamadessa/Developer/Git/Projects/prolong_antlr/build/grammar/prologLexer.cpp",
+    "output": "/Users/mohamadessa/Developer/Git/Projects/prolong_antlr/build/obj/prologLexer.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/clang++",
+      "-Wall",
+      "-std=c++17",
+      "-I",
+      "./include",
+      "-I",
+      "./include/antlr4-runtime",
+      "-I",
+      "./build/include",
+      "-c",
+      "-o",
+      "build/obj/prologParser.o",
+      "./build/./grammar/prologParser.cpp"
+    ],
+    "directory": "/Users/mohamadessa/Developer/Git/Projects/prolong_antlr",
+    "file": "/Users/mohamadessa/Developer/Git/Projects/prolong_antlr/build/grammar/prologParser.cpp",
+    "output": "/Users/mohamadessa/Developer/Git/Projects/prolong_antlr/build/obj/prologParser.o"
+  }
+]

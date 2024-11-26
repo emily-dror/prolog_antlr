@@ -10,7 +10,7 @@ start = 1
 end = 8 
 
 
-for i in range(1,end+1):
+for i in range(1, end+1):
     test_path = os.path.join(os.getcwd(),f"{TEST_DIR}/test{i}.pl")
 
     output = subprocess.run(
