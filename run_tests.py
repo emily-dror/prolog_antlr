@@ -24,5 +24,10 @@ for i in range(1,end+1):
     with open(output_path,'w') as output_file:
         output_file.write(output.stdout)
 
+    if output.stderr:
+        print(f"Error in parsing test {i}")
+    else: 
+        print(f"Test {i} parsed successfully")
+
 
 
