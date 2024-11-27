@@ -3,6 +3,7 @@
 #include <filesystem>
 #include <fstream>
 
+#include "Utils.hpp"
 
 
 namespace PrologCompiler {
