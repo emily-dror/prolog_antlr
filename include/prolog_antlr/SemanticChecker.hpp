@@ -31,6 +31,11 @@ struct ProgramParseListener : public prologBaseListener {
     void exitEveryRule(antlr4::ParserRuleContext* ctx) override;
 };
 
+/**
+ * @class VariableSemanticListener
+ * @brief For checking additional semanics of variables.
+ *
+ */
 struct VariableSemanticListener : public prologBaseListener {
     void enterVariable(prologParser::VariableContext* ctx) override;
     bool valid() const;
@@ -40,6 +45,12 @@ struct VariableSemanticListener : public prologBaseListener {
     static constexpr std::size_t MIN_VAR_COUNT = 2;
 };
 
+/**
+ * @class SemanticCheckListener
+ * @brief This is a composite class, add any listener, call it on the function you want.
+ * Uses: Doing multiple semantic checks in one tree walk.
+ *
+ */
 struct SemanticCheckListener : prologBaseListener {
     enum class Listeners {
         VAR_L = 0,
