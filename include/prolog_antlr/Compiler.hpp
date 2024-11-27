@@ -1,22 +1,18 @@
 #pragma once
 
+#include <filesystem>
 #include <fstream>
 
+
+
 namespace PrologCompiler {
-
-
-struct Symbol{
-    std::string name;
-    std::string type;
-};
-
-class Compiler{
+class Compiler {
 public:
     Compiler() = default;
     ~Compiler() = default;
+    void compile(const std::filesystem::path& pathToTheFile);
 
-    void compile(const std::ifstream&);
 private:
-    std::ifstream m_file;
+    std::ifstream m_target; // File to compile
 };
-}
+} // namespace PrologCompiler
