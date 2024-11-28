@@ -7,6 +7,8 @@
       "-I",
       "./include",
       "-I",
+      "./include/prolog_antlr",
+      "-I",
       "./include/antlr4-runtime",
       "-I",
       "./build/include",
@@ -15,9 +17,9 @@
       "build/obj/AST.o",
       "src/AST.cpp"
     ],
-    "directory": "/Users/mohamadessa/Developer/Git/Projects/prolong_antlr",
-    "file": "/Users/mohamadessa/Developer/Git/Projects/prolong_antlr/src/AST.cpp",
-    "output": "/Users/mohamadessa/Developer/Git/Projects/prolong_antlr/build/obj/AST.o"
+    "directory": "/Users/mohamadessa/Developer/Git/Projects/prolog_antlr",
+    "file": "/Users/mohamadessa/Developer/Git/Projects/prolog_antlr/src/AST.cpp",
+    "output": "/Users/mohamadessa/Developer/Git/Projects/prolog_antlr/build/obj/AST.o"
   },
   {
     "arguments": [
@@ -26,6 +28,8 @@
       "-std=c++17",
       "-I",
       "./include",
+      "-I",
+      "./include/prolog_antlr",
       "-I",
       "./include/antlr4-runtime",
       "-I",
@@ -35,9 +39,9 @@
       "build/obj/prologLexer.o",
       "./build/./grammar/prologLexer.cpp"
     ],
-    "directory": "/Users/mohamadessa/Developer/Git/Projects/prolong_antlr",
-    "file": "/Users/mohamadessa/Developer/Git/Projects/prolong_antlr/build/grammar/prologLexer.cpp",
-    "output": "/Users/mohamadessa/Developer/Git/Projects/prolong_antlr/build/obj/prologLexer.o"
+    "directory": "/Users/mohamadessa/Developer/Git/Projects/prolog_antlr",
+    "file": "/Users/mohamadessa/Developer/Git/Projects/prolog_antlr/build/grammar/prologLexer.cpp",
+    "output": "/Users/mohamadessa/Developer/Git/Projects/prolog_antlr/build/obj/prologLexer.o"
   },
   {
     "arguments": [
@@ -47,6 +51,8 @@
       "-I",
       "./include",
       "-I",
+      "./include/prolog_antlr",
+      "-I",
       "./include/antlr4-runtime",
       "-I",
       "./build/include",
@@ -55,8 +61,8 @@
       "build/obj/prologParser.o",
       "./build/./grammar/prologParser.cpp"
     ],
-    "directory": "/Users/mohamadessa/Developer/Git/Projects/prolong_antlr",
-    "file": "/Users/mohamadessa/Developer/Git/Projects/prolong_antlr/build/grammar/prologParser.cpp",
-    "output": "/Users/mohamadessa/Developer/Git/Projects/prolong_antlr/build/obj/prologParser.o"
+    "directory": "/Users/mohamadessa/Developer/Git/Projects/prolog_antlr",
+    "file": "/Users/mohamadessa/Developer/Git/Projects/prolog_antlr/build/grammar/prologParser.cpp",
+    "output": "/Users/mohamadessa/Developer/Git/Projects/prolog_antlr/build/obj/prologParser.o"
   }
 ]

@@ -2,7 +2,7 @@
 
 # Compiler and Linker Options
 export CXX := clang++
-export CXXFLAGS := -Wall -std=c++17
+export CXXFLAGS := -Wall -std=c++20
 export ANTLR_CMD := antlr -Dlanguage=Cpp
 
 export LD := $(CXX)
@@ -55,6 +55,7 @@ BUILD_DIR := $(ROOT)/build
 GRAMMAR_DIR := $(ROOT)/grammar
 INCLUDE_DIRS := \
     -I $(ROOT)/include \
+	-I $(ROOT)/include/prolog_antlr \
     -I $(ROOT)/include/antlr4-runtime \
 	-I $(BUILD_DIR)/include
 
