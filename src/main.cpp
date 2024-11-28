@@ -16,8 +16,8 @@ int main(int argc, const char* argv[]) {
         return 1;
     }
 
-    PrologCompiler::Compiler compiler;
-    compiler.compile(argv[1]);
+    Prolog::Compiler compiler;
+    compiler.compile(argv[1],{Prolog::Compiler::Flag::COMP_TO_PROLOG});
 
     return 0;
 }

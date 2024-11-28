@@ -7,6 +7,7 @@
 #include "Utils.hpp"
 #include "tree/ParseTree.h"
 
+#include "prologParser.h"
 namespace Prolog {
 
 /**
@@ -34,8 +35,12 @@ public:
     void compile(const std::filesystem::path& pathToTheFile, const std::set<Flag>& flags);
 
 private:
-    std::ifstream m_target; // File to compile
-    std::list<antlr4::tree::ParseTree*> getProgramList(antlr4::tree::ParseTree*) const;
+    std::filesystem::path m_targetPath;
+
+    void varNumCheck(prologParser& parser);
+    void genAst(prologParser& parser);
+    void genProlog(prologParser& parser);
+
     bool enabled(Flag) const;
 };
 } // namespace Prolog

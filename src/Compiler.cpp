@@ -2,33 +2,55 @@
 #include "Visitors.hpp"
 #include "prologLexer.h"
 #include "prologParser.h"
+#include "tree/TerminalNode.h"
 #include <filesystem>
 #include <fstream>
+#include <variant>
 
 namespace Prolog {
 
-// NOTE: There is no need for this function, replaces by ProgramRestoreVisitor.
-// std::list<antlr4::tree::ParseTree*> Compiler::getProgramList(antlr4::tree::ParseTree* root) const {
-//     if (root == nullptr) {
-//         return {};
-//     }
-//
-//     if (root->children.empty()) {
-//         return {root};
-//     }
-//
-//     auto leaves = std::list<decltype(root)>{};
-//
-//     for (auto* child : root->children) {
-//         auto childList = getProgramList(child);
-//         leaves.splice(leaves.end(), childList);
-//     }
-//
-//     return leaves;
-// }
+void Compiler::genProlog(prologParser& parser) {
+    auto* programStartCtx = parser.p_text();
+    Visitors::ProgramRestoreVisitor progRestoreV;
 
-// TODO: Organize this miss.
+
+
+    progRestoreV.visit(programStartCtx);
+    auto progList = progRestoreV.programList;
+
+    auto outputPath = m_targetPath.replace_extension("").concat("_out.pl");
+
+    std::ofstream outputFile(outputPath);
+
+    if (!outputFile) {
+        std::cerr << "Error opening the file: " << outputPath << '\n';
+    }
+
+    for (auto& stmtList : progList) {
+        for (auto& stmt : stmtList) {
+            std::visit([&outputFile](auto* arg) {outputFile << arg->getText() << " "; }, stmt);
+        }
+        outputFile<<'\n';
+    }
+}
+
+void Compiler::genAst(prologParser& parser) {
+    auto* programStartCtx = parser.p_text();
+
+    auto outputPath = m_targetPath.replace_extension("").concat("_ast.out");
+
+    std::ofstream outputFile(outputPath);
+
+    if (!outputFile) {
+        std::cerr << "Error opening the file: " << outputPath << '\n';
+    }
+
+    outputFile << programStartCtx->toStringTree();
+}
+
 void Compiler::compile(const std::filesystem::path& path, const std::set<Flag>& flags) {
+    m_targetPath = path;
+
     std::ifstream targetFile{path};
 
     if (!targetFile) {
@@ -37,43 +59,14 @@ void Compiler::compile(const std::filesystem::path& path, const std::set<Flag>& 
 
     auto enabled = [&flags](Flag flag) { return flags.find(flag) != flags.end(); };
 
-    // Create ANTLR input stream
     antlr4::ANTLRInputStream input(targetFile);
-    // Create Lexer and TokenStream
     prologLexer lexer(&input);
-
     antlr4::CommonTokenStream tokens(&lexer);
-
     prologParser parser(&tokens);
 
-    auto* programStartCtx = parser.p_text();
 
-    Visitors::VariableSemanticVisitor varV;
-
-    varV.visit(programStartCtx);
-
-    if (enabled(Flag::VAR_NUM_CHECK)) {
-        if (varV.invalidVars != 0) {
-            std::cerr << "Variables must occur at least twice" << '\n';
-            exit(-1);
-        }
-    }
-
-    if (enabled(Flag::COMP_TO_PROLOG)) {
-        Visitors::ProgramRestoreVisitor progRestoreV;
-
-        progRestoreV.visit(programStartCtx);
-        auto progList = progRestoreV.programList;
-    }
-
-    if (enabled(Flag::GEN_AST)) {
-        Visitors::ProgramRestoreVisitor progRestoreV;
-
-        progRestoreV.visit(programStartCtx);
-        auto progList = progRestoreV.programList;
-    }
+    genProlog(parser);
+    genAst(parser);
 }
-
-
 
 } // namespace Prolog

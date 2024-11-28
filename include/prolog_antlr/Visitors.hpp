@@ -1,20 +1,13 @@
 #pragma once
 
 #include "ParserRuleContext.h"
-#include "Token.h"
-#include "Utils.hpp"
-#include "prologBaseListener.h"
 #include "prologBaseVisitor.h"
 #include "prologParser.h"
-#include "tree/ParseTree.h"
 #include "tree/TerminalNode.h"
-#include <array>
 #include <list>
-#include <bitset>
-#include <memory>
+#include <variant>
 
 namespace Prolog::Visitors {
-
 
 struct VariableSemanticVisitor : public prologBaseVisitor {
     std::any visitVariable(prologParser::VariableContext* ctx) override;
@@ -29,11 +22,14 @@ struct ProgramRestoreVisitor : public prologBaseVisitor {
     // NOTE: We can use std::variant for a cleaner code for clause/directive
     std::any visitClause(prologParser::ClauseContext* ctx) override;
     std::any visitDirective(prologParser::DirectiveContext* ctx) override;
-
-    // Note that this method comes form the super classAbstractParseTreeVisitor
+    std::any visitCompound_term(prologParser::Compound_termContext *ctx) override;
+    // NOTE: This method comes form the super class AbstractParseTreeVisitor
     std::any visitTerminal(antlr4::tree::TerminalNode* ctx) override;
 
-    std::list<std::list<antlr4::tree::TerminalNode*>> programList = {{}};
+
+    using ProgramNode = std::variant<antlr4::tree::TerminalNode*, antlr4::ParserRuleContext*>;
+
+    std::list<std::list<ProgramNode>> programList = {{}};
 };
 
-} // namespace PrologCompiler
+} // namespace Prolog::Visitors
