@@ -2,32 +2,30 @@
 
 #include "ParserRuleContext.h"
 #include "Token.h"
+#include "Utils.hpp"
 #include "prologBaseListener.h"
+#include "prologBaseVisitor.h"
 #include "prologParser.h"
 #include "tree/ParseTree.h"
+#include "tree/TerminalNode.h"
 #include <array>
 #include <bitset>
+#include <list>
 #include <memory>
-#include "Utils.hpp"
 
+namespace Prolog {
+/**
+ * @class VariableSemanticListener
+ * @brief For checking additional semanics of variables.
+ *
+ */
 
-namespace PrologCompiler {
 
 struct Var {
     prologParser::VariableContext* varCtx;
     std::size_t count = 1;
 };
 
-struct ProgramParseListener : public prologBaseListener {
-    std::vector<std::vector<antlr4::tree::ParseTree*>> stmts = {{}};
-    void exitEveryRule(antlr4::ParserRuleContext* ctx) override;
-};
-
-/**
- * @class VariableSemanticListener
- * @brief For checking additional semanics of variables.
- *
- */
 struct VariableSemanticListener : public prologBaseListener {
     void enterVariable(prologParser::VariableContext* ctx) override;
     bool valid() const;
@@ -50,14 +48,12 @@ struct SemanticCheckListener : prologBaseListener {
     };
 
     std::unique_ptr<VariableSemanticListener> varSemanticChecker;
-    std::unique_ptr<ProgramParseListener> programParser;
     std::set<Listeners> enabledListeners;
 
     SemanticCheckListener(const std::set<Listeners>& listeners);
 
     bool enabled(Listeners listener) const;
     void enterVariable(prologParser::VariableContext* ctx) override;
-    void exitEveryRule(antlr4::ParserRuleContext* ctx) override;
 };
 
 } // namespace PrologCompiler
