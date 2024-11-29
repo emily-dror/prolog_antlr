@@ -11,7 +11,7 @@ namespace Prolog::Visitors {
 std::any ProgramRestoreVisitor::visitClause(prologParser::ClauseContext* ctx) {
     CHECK_NULL(ctx);
 
-    programList.push_back({});
+    programStmtList.push_back({});
 
     return visitChildren(ctx);
 }
@@ -19,7 +19,7 @@ std::any ProgramRestoreVisitor::visitClause(prologParser::ClauseContext* ctx) {
 std::any ProgramRestoreVisitor::visitDirective(prologParser::DirectiveContext* ctx) {
     CHECK_NULL(ctx);
 
-    programList.push_back({});
+    programStmtList.push_back({});
 
     return visitChildren(ctx);
 }
@@ -27,14 +27,14 @@ std::any ProgramRestoreVisitor::visitDirective(prologParser::DirectiveContext* c
 
 std::any ProgramRestoreVisitor::visitCompound_term(prologParser::Compound_termContext *ctx){
     CHECK_NULL(ctx);
-    programList.back().push_back(ctx);
+    programStmtList.back().push_back(ctx);
     return {};
 }
 std::any ProgramRestoreVisitor::visitTerminal(antlr4::tree::TerminalNode* ctx) {
     CHECK_NULL(ctx);
 
     if(ctx->getSymbol()->getType() != antlr4::Token::EOF){
-        programList.back().push_back(ctx);
+        programStmtList.back().push_back(ctx);
     }
 
     return visitChildren(ctx);
