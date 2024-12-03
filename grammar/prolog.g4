@@ -38,7 +38,11 @@ grammar prolog;
 // Prolog text and data formed from terms (6.2)
 
 p_text
-    : (directive | clause)* EOF
+    : (func_def | directive | clause)* EOF
+    ;
+
+func_def
+    : VARIABLE func_args '*' tuple_entry  ( tuple_entry (',' | ';') )* '.'
     ;
 
 directive
@@ -55,6 +59,29 @@ termlist
     : term (',' term)*
     ;
 
+/**********************Grammar Extention**********************/
+
+func_args
+    : '(' VARIABLE ( ',' VARIABLE)* ')'
+;
+
+call
+    : VARIABLE tuple
+    ;
+
+tuple
+    : '(' (tuple_list)? ')' // tuple might be empty so the arglist is optional
+    ;
+
+tuple_list
+    : tuple_entry (',' tuple_entry)*
+    ;
+
+tuple_entry    
+    : term 
+    | tuple
+    ;
+
 term
     : VARIABLE     # variable
     | '(' term ')' # braced_term
@@ -67,7 +94,10 @@ term
     | '[' termlist ( '|' term)? ']'       # list_term
     | '{' termlist '}'                    # curly_bracketed_term
     | atom                                # atom_term
+    | call #func_call   /******* Extention *******/
     ;
+
+/*****************************/
 
 //TODO: operator priority, associativity, arity. Filter valid priority ranges for e.g. [list] syntax
 //TODO: modifying operator table
