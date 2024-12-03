@@ -2,7 +2,7 @@
 
 # Compiler and Linker Options
 export CXX := clang++
-export CXXFLAGS := -Wall -std=c++20
+export CXXFLAGS := -Wall -std=c++2b
 export ANTLR_CMD := antlr -Dlanguage=Cpp -visitor
 
 export LD := $(CXX)
