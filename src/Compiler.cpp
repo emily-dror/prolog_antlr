@@ -5,6 +5,7 @@
 #include <filesystem>
 #include <fstream>
 #include <variant>
+#include <format>
 
 namespace Prolog {
 
@@ -21,7 +22,7 @@ void Compiler::genProlog(prologParser& parser) {
     std::ofstream outputFile(outputPath);
 
     if (!outputFile) {
-        std::cerr << "Error opening the file: " << outputPath << '\n';
+        std::cerr << std::format("Error opening the file: {}\n", outputPath.string());
     }
 
     for (auto& stmtList : progList) {
@@ -42,7 +43,7 @@ void Compiler::genAst(prologParser& parser) {
     std::ofstream outputFile(outputPath);
 
     if (!outputFile) {
-        std::cerr << "Error opening the file: " << outputPath << '\n';
+        std::cerr << std::format("Error opening the file: {}\n", outputPath.string());
     }
 
     outputFile << programStartCtx->toStringTree();
@@ -56,12 +57,12 @@ void Compiler::varNumCheck(prologParser& parser) {
 
     varV.visit(programStartCtx);
 
-    if (varV.invalidVars != 0) {
-        for (auto& [varName, _] : varV.varTbl) {
-            std::cerr << "Error: " << varName << " occured one time only." << '\n';
+    for (auto& [varName, count] : varV.varTbl) {
+        if (count != Visitors::VariableSemanticVisitor::VAR_COUNT) {
+            std::cerr << std::format("Error: {} must appear two times exacly\n", varName);
         }
-        exit(-1);
     }
+
 }
 
 void Compiler::compile(const std::filesystem::path& path, const std::set<Flag>& flags) {
@@ -70,18 +71,13 @@ void Compiler::compile(const std::filesystem::path& path, const std::set<Flag>& 
     std::ifstream targetFile{path};
 
     if (!targetFile) {
-        std::cerr << "Error opening the file: " << path << '\n';
+        std::cerr << std::format("Error opening the file: {}\n", path.string());
     }
-
-    // auto enabled = [&flags](Flag flag) { return flags.find(flag) != flags.end(); };
 
     antlr4::ANTLRInputStream input(targetFile);
     prologLexer lexer(&input);
     antlr4::CommonTokenStream tokens(&lexer);
     prologParser parser(&tokens);
-
-    // BUG: Using the parser changes some internal state in it, the reset()
-    // method might be the solution.
 
     // PERF: Maybe we can change the implementation to some map: Flag -> Func.
     varNumCheck(parser);

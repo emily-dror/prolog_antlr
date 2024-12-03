@@ -4,7 +4,9 @@
 #include "prologBaseVisitor.h"
 #include "prologParser.h"
 #include "tree/TerminalNode.h"
+#include <cstdint>
 #include <list>
+#include <set>
 #include <variant>
 
 namespace Prolog::Visitors {
@@ -12,9 +14,8 @@ namespace Prolog::Visitors {
 struct VariableSemanticVisitor : public prologBaseVisitor {
     std::any visitVariable(prologParser::VariableContext* ctx) override;
 
-    std::map<std::string, std::pair<prologParser::VariableContext*, std::size_t>> varTbl;
-    std::size_t invalidVars = 0;
-    static constexpr std::size_t MIN_VAR_COUNT = 2;
+    std::map<std::string, std::uint8_t> varTbl;
+    static constexpr std::size_t VAR_COUNT = 2;
 };
 
 struct ProgramRestoreVisitor : public prologBaseVisitor {

@@ -1,9 +1,9 @@
 #include "Token.h"
+#include "Utils.hpp"
 #include "Visitors.hpp"
 #include "prologParser.h"
 #include "tree/TerminalNode.h"
 #include <cctype>
-#include "Utils.hpp"
 #include <map>
 
 namespace Prolog::Visitors {
@@ -24,8 +24,7 @@ std::any ProgramRestoreVisitor::visitDirective(prologParser::DirectiveContext* c
     return visitChildren(ctx);
 }
 
-
-std::any ProgramRestoreVisitor::visitCompound_term(prologParser::Compound_termContext *ctx){
+std::any ProgramRestoreVisitor::visitCompound_term(prologParser::Compound_termContext* ctx) {
     CHECK_NULL(ctx);
     programStmtList.back().push_back(ctx);
     return {};
@@ -33,7 +32,7 @@ std::any ProgramRestoreVisitor::visitCompound_term(prologParser::Compound_termCo
 std::any ProgramRestoreVisitor::visitTerminal(antlr4::tree::TerminalNode* ctx) {
     CHECK_NULL(ctx);
 
-    if(ctx->getSymbol()->getType() != antlr4::Token::EOF){
+    if (ctx->getSymbol()->getType() != antlr4::Token::EOF) {
         programStmtList.back().push_back(ctx);
     }
 
@@ -45,19 +44,15 @@ std::any VariableSemanticVisitor::visitVariable(prologParser::VariableContext* c
 
     const std::string& varName = ctx->getText();
 
-    if (ctx->getText() == "_") {
-        return {};
+    if (varName == "_") {
+        return visitChildren(ctx);
     }
 
     if (auto it = varTbl.find(varName); it != varTbl.end()) {
-        auto& [_, var] = *it;
-        auto& [varCtx, count] = var;
-        if (count == MIN_VAR_COUNT) {
-            invalidVars--;
-        }
+        auto& [_, count] = *it;
+        ++count;
     } else {
-        varTbl.insert({varName, {ctx, 1}});
-        invalidVars++;
+        varTbl.insert({varName, 1});
     }
 
     return visitChildren(ctx);

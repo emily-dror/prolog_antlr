@@ -5,7 +5,6 @@
 #include <list>
 
 #include "Utils.hpp"
-#include "tree/ParseTree.h"
 
 #include "prologParser.h"
 namespace Prolog {
