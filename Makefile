@@ -3,7 +3,7 @@
 # Compiler and Linker Options
 export CXX := clang++
 export CXXFLAGS := -Wall -std=c++20
-export ANTLR_CMD := antlr -Dlanguage=Cpp
+export ANTLR_CMD := antlr -Dlanguage=Cpp -visitor
 
 export LD := $(CXX)
 export LD_FLAGS = -L $(LIB_DIR) -l $(DYLIB_NAME) -Wl,-rpath,@loader_path/$(LIB_DIR)

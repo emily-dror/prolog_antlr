@@ -1,44 +1,92 @@
 #include "Compiler.hpp"
-#include "ListTokenSource.h"
-#include "SemanticChecker.hpp"
+#include "Visitors.hpp"
 #include "prologLexer.h"
 #include "prologParser.h"
-#include "tree/ParseTree.h"
 #include <filesystem>
 #include <fstream>
+#include <variant>
 
-namespace PrologCompiler {
+namespace Prolog {
 
-void Compiler::compile(const std::filesystem::path& path) {
+void Compiler::genProlog(prologParser& parser) {
+    parser.reset();
+    auto* programStartCtx = parser.p_text();
+    Visitors::ProgramRestoreVisitor progRestoreV;
+
+    progRestoreV.visit(programStartCtx);
+    auto progList = progRestoreV.programStmtList;
+
+    auto outputPath = m_targetPath.replace_extension("").concat("_out.pl");
+
+    std::ofstream outputFile(outputPath);
+
+    if (!outputFile) {
+        std::cerr << "Error opening the file: " << outputPath << '\n';
+    }
+
+    for (auto& stmtList : progList) {
+        for (auto& stmt : stmtList) {
+            std::visit([&outputFile](auto* arg) { outputFile << arg->getText() << " "; }, stmt);
+        }
+        outputFile << '\n';
+    }
+}
+
+void Compiler::genAst(prologParser& parser) {
+
+    parser.reset();
+    auto* programStartCtx = parser.p_text();
+
+    auto outputPath = m_targetPath.replace_extension("").concat("_ast.out");
+
+    std::ofstream outputFile(outputPath);
+
+    if (!outputFile) {
+        std::cerr << "Error opening the file: " << outputPath << '\n';
+    }
+
+    outputFile << programStartCtx->toStringTree();
+}
+
+void Compiler::varNumCheck(prologParser& parser) {
+    parser.reset();
+    auto* programStartCtx = parser.p_text();
+
+    Visitors::VariableSemanticVisitor varV;
+
+    varV.visit(programStartCtx);
+
+    if (varV.invalidVars != 0) {
+        for (auto& [varName, _] : varV.varTbl) {
+            std::cerr << "Error: " << varName << " occured one time only." << '\n';
+        }
+        exit(-1);
+    }
+}
+
+void Compiler::compile(const std::filesystem::path& path, const std::set<Flag>& flags) {
+    m_targetPath = path;
+
     std::ifstream targetFile{path};
 
     if (!targetFile) {
         std::cerr << "Error opening the file: " << path << '\n';
     }
 
-    // Create ANTLR input stream
+    // auto enabled = [&flags](Flag flag) { return flags.find(flag) != flags.end(); };
+
     antlr4::ANTLRInputStream input(targetFile);
-
-    // Create Lexer and TokenStream
     prologLexer lexer(&input);
-
     antlr4::CommonTokenStream tokens(&lexer);
-
     prologParser parser(&tokens);
-    auto* semanticListener = new SemanticCheckListener(
-        {SemanticCheckListener::Listeners::VAR_L, SemanticCheckListener::Listeners::PROG_PARSE_L});
 
-    antlr4::tree::ParseTreeWalker::DEFAULT.walk(semanticListener, parser.p_text());
+    // BUG: Using the parser changes some internal state in it, the reset()
+    // method might be the solution.
 
-    DEBUG(for (auto [name, var] : semanticListener->varSemanticChecker->varTbl) {
-        std::cout << "Variable " << name << ", Count: " << var.count << std::endl;
-    })
-
-    DEBUG(for (auto& stmtCtx : semanticListener->programParser->stmts) {
-        for (auto* ctx : stmtCtx) {
-            std::cout << ctx->getText();
-        }
-        std::cout << '\n';
-    });
+    // PERF: Maybe we can change the implementation to some map: Flag -> Func.
+    varNumCheck(parser);
+    genAst(parser);
+    genProlog(parser);
 }
-} // namespace PrologCompiler
+
+} // namespace Prolog

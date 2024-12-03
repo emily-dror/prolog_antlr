@@ -9,3 +9,10 @@
 #define DEBUG(line)
 #define LOG(line)
 #endif
+
+
+#define CHECK_NULL(ptr)   \
+    if (ptr == nullptr) { \
+        LOG("Nullptr"); \
+        throw std::invalid_argument("Null pointer exception"); \
+    }
