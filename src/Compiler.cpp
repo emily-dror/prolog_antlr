@@ -14,6 +14,8 @@ void Compiler::genProlog(prologParser& parser) {
     auto* programStartCtx = parser.p_text();
     Visitors::ProgramRestoreVisitor progRestoreV;
 
+
+    progRestoreV.markEmptyTuplesV.visit(programStartCtx);
     progRestoreV.visit(programStartCtx);
     auto progList = progRestoreV.programStmtList;
 
@@ -27,7 +29,7 @@ void Compiler::genProlog(prologParser& parser) {
 
     for (auto& stmtList : progList) {
         for (auto& stmt : stmtList) {
-            std::visit([&outputFile](auto* arg) { outputFile << arg->getText() << " "; }, stmt);
+             outputFile << stmt << " ";
         }
         outputFile << '\n';
     }
@@ -85,10 +87,7 @@ void Compiler::compile(const std::filesystem::path& path, const std::set<Flag>& 
     // genAst(parser);
     // genProlog(parser);
     //
-
-    auto* programStartCtx = parser.p_text();
-    Visitors::MarkEmptyTuplesVisitor v;
-    v.visit(programStartCtx);
+    genProlog(parser);
 
 }
 
