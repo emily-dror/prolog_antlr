@@ -42,7 +42,8 @@ p_text
     ;
 
 func_def
-    : VARIABLE func_args '*' tuple_entry  ( tuple_entry (',' | ';') )* '.'
+    : VARIABLE func_args '*' tuple_entry ((',' | ';') tuple_entry)* '.' // Maybe we can find a better solution later.
+    | VARIABLE func_args '*' '(' tuple_entry ((',' | ';') tuple_entry)* ')' '.'
     ;
 
 directive
@@ -63,18 +64,14 @@ termlist
 
 func_args
     : '(' VARIABLE ( ',' VARIABLE)* ')'
-;
+    ;
 
 call
     : VARIABLE tuple
     ;
 
 tuple
-    : '(' (tuple_list)? ')' // tuple might be empty so the arglist is optional
-    ;
-
-tuple_list
-    : tuple_entry (',' tuple_entry)*
+    : '(' (tuple_entry (',' tuple_entry)*)? ')' // tuple might be empty so the arglist is optional
     ;
 
 tuple_entry    

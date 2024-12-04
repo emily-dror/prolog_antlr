@@ -1,9 +1,11 @@
+#include "Visitors.hpp"
+#include "ParserRuleContext.h"
 #include "Token.h"
 #include "Utils.hpp"
-#include "Visitors.hpp"
 #include "prologParser.h"
 #include "tree/TerminalNode.h"
 #include <cctype>
+#include <format>
 #include <map>
 
 namespace Prolog::Visitors {
@@ -57,5 +59,30 @@ std::any VariableSemanticVisitor::visitVariable(prologParser::VariableContext* c
 
     return visitChildren(ctx);
 }
+
+std::any MarkEmptyTuplesVisitor::visitTuple(prologParser::TupleContext* ctx) {
+    CHECK_NULL(ctx);
+
+    // postorder
+    visitChildren(ctx);
+
+    auto entryVec = ctx->tuple_entry(); 
+
+    bool isEmpty = true; // Base: if there are no entries then the for won't do any iteration.
+    for(auto* entry : entryVec){
+        auto* pTuple = entry->tuple();
+        if(pTuple != nullptr){ // This is a tuple.
+            if(empty.get(pTuple) == false){
+                isEmpty = false;
+                break;
+            }
+        }
+    }
+
+    empty.put(ctx, isEmpty);
+
+    LOG(std::format("{}: {}",(isEmpty) ? "Empty" : "Not Empty",ctx->getText()));
+    return {};
+};
 
 } // namespace Prolog::Visitors

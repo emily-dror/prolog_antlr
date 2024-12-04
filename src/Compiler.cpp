@@ -3,9 +3,9 @@
 #include "prologLexer.h"
 #include "prologParser.h"
 #include <filesystem>
+#include <format>
 #include <fstream>
 #include <variant>
-#include <format>
 
 namespace Prolog {
 
@@ -62,7 +62,6 @@ void Compiler::varNumCheck(prologParser& parser) {
             std::cerr << std::format("Error: {} must appear two times exacly\n", varName);
         }
     }
-
 }
 
 void Compiler::compile(const std::filesystem::path& path, const std::set<Flag>& flags) {
@@ -79,10 +78,18 @@ void Compiler::compile(const std::filesystem::path& path, const std::set<Flag>& 
     antlr4::CommonTokenStream tokens(&lexer);
     prologParser parser(&tokens);
 
+
+
     // PERF: Maybe we can change the implementation to some map: Flag -> Func.
-    varNumCheck(parser);
-    genAst(parser);
-    genProlog(parser);
+    // varNumCheck(parser);
+    // genAst(parser);
+    // genProlog(parser);
+    //
+
+    auto* programStartCtx = parser.p_text();
+    Visitors::MarkEmptyTuplesVisitor v;
+    v.visit(programStartCtx);
+
 }
 
 } // namespace Prolog

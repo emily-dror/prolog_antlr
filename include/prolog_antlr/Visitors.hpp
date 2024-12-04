@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Parser.h"
 #include "ParserRuleContext.h"
 #include "prologBaseVisitor.h"
 #include "prologParser.h"
@@ -30,6 +31,12 @@ struct ProgramRestoreVisitor : public prologBaseVisitor {
     using ProgramNode = std::variant<antlr4::tree::TerminalNode*, antlr4::ParserRuleContext*>;
 
     std::list<std::list<ProgramNode>> programStmtList = {{}};
+};
+
+struct MarkEmptyTuplesVisitor : public prologBaseVisitor {
+    antlr4::tree::ParseTreeProperty<bool> empty;
+    std::map<antlr4::ParserRuleContext, bool> rulesMap;
+    std::any visitTuple(prologParser::TupleContext* ctx) override;
 };
 
 } // namespace Prolog::Visitors
