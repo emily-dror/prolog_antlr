@@ -13,9 +13,11 @@ void Compiler::genProlog(prologParser& parser) {
     parser.reset();
     auto* programStartCtx = parser.p_text();
     Visitors::ProgramRestoreVisitor progRestoreV;
+    Visitors::MarkEmptyTuplesVisitor markEmptyTuplesV;
 
+    markEmptyTuplesV.visit(programStartCtx);
 
-    progRestoreV.markEmptyTuplesV.visit(programStartCtx);
+    progRestoreV.emptyTuples = markEmptyTuplesV.emptyTuples;
     progRestoreV.visit(programStartCtx);
     auto progList = progRestoreV.programStmtList;
 
@@ -83,10 +85,8 @@ void Compiler::compile(const std::filesystem::path& path, const std::set<Flag>& 
 
 
     // PERF: Maybe we can change the implementation to some map: Flag -> Func.
-    // varNumCheck(parser);
-    // genAst(parser);
-    // genProlog(parser);
-    //
+    varNumCheck(parser);
+    genAst(parser);
     genProlog(parser);
 
 }

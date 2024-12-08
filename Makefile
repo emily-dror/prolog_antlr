@@ -57,6 +57,7 @@ INCLUDE_DIRS := \
     -I $(ROOT)/include \
 	-I $(ROOT)/include/prolog_antlr \
     -I $(ROOT)/include/antlr4-runtime \
+    -I $(ROOT)/include/gtest \
 	-I $(BUILD_DIR)/include
 
 # Build Directory, Don't Change!!

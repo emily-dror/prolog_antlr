@@ -6,6 +6,7 @@
 #include <fstream>
 #include <iostream>
 #include "Compiler.hpp"
+#include "gtest.h"
 
 using namespace antlr4;
 

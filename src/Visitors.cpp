@@ -1,5 +1,4 @@
 #include "Visitors.hpp"
-#include "ParserRuleContext.h"
 #include "Token.h"
 #include "Utils.hpp"
 #include "prologParser.h"
@@ -28,6 +27,7 @@ std::any ProgramRestoreVisitor::visitDirective(prologParser::DirectiveContext* c
 
 std::any ProgramRestoreVisitor::visitCompound_term(prologParser::Compound_termContext* ctx) {
     CHECK_NULL(ctx);
+
     programStmtList.back().push_back(ctx->getText());
     return {};
 }
@@ -42,9 +42,15 @@ std::any ProgramRestoreVisitor::visitTerminal(antlr4::tree::TerminalNode* ctx) {
 }
 
 std::any ProgramRestoreVisitor::visitTuple(prologParser::TupleContext* ctx) {
+
+    if(!emptyTuples.has_value()){
+        return visitChildren(ctx);
+    }
+
     CHECK_NULL(ctx);
 
-    if (markEmptyTuplesV.emptyTuples.get(ctx)) {
+
+    if (emptyTuples.value().get(ctx)) {
         programStmtList.back().push_back("()");
         return {};
     }
@@ -52,10 +58,10 @@ std::any ProgramRestoreVisitor::visitTuple(prologParser::TupleContext* ctx) {
     programStmtList.back().push_back("(");
 
     std::vector<std::string> nonEmptyEntries;
-    for (auto* entry : ctx->tuple_entry()) {
+    for (auto* pEntry : ctx->tuple_entry()) {
         // If its a term, or an non-empty tuple then add it. 
-        if (entry->tuple() == nullptr || !markEmptyTuplesV.emptyTuples.get(entry->tuple())) { 
-            visit(entry);
+        if (pEntry->tuple() == nullptr || !emptyTuples.value().get(pEntry->tuple())) { 
+            visit(pEntry);
             programStmtList.back().push_back(",");
         }
     }
@@ -96,8 +102,8 @@ std::any MarkEmptyTuplesVisitor::visitTuple(prologParser::TupleContext* ctx) {
     auto entryVec = ctx->tuple_entry();
 
     bool isEmpty = true; // Base: if there are no entries then the for won't do any iteration.
-    for (auto* entry : entryVec) {
-        auto* pTuple = entry->tuple();
+    for (auto* pEntry : entryVec) {
+        auto* pTuple = pEntry->tuple();
         if (pTuple != nullptr) { // This is a tuple.
             if (!emptyTuples.get(pTuple)) {
                 isEmpty = false;
