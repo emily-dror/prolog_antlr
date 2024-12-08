@@ -5,9 +5,10 @@ export CXX := clang++
 export GTEST_FLAGS := -lgtest -lgtest_main
 export CXXFLAGS := -Wall -std=c++2b $(GTEST_FLAGS)
 export ANTLR_CMD := antlr -Dlanguage=Cpp -visitor
+export GTEST_FLAGS := -lgtest -lgtest_main -pthread
 
 export LD := $(CXX)
-export LD_FLAGS = -L $(LIB_DIR) -l $(DYLIB_NAME) -lgtest -lgtest_main -pthread -Wl,-rpath,@loader_path/$(LIB_DIR)
+export LD_FLAGS = -L $(LIB_DIR) -l $(DYLIB_NAME) $(GTEST_FLAGS) -Wl,-rpath,@loader_path/$(LIB_DIR)
 
 ################################################################################
 ### Project Paramaters

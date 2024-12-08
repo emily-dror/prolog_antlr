@@ -42,8 +42,12 @@ p_text
     ;
 
 func_def
-    : VARIABLE func_args '*' tuple_entry ((',' | ';') tuple_entry)* '.' // Maybe we can find a better solution later.
-    | VARIABLE func_args '*' '(' tuple_entry ((',' | ';') tuple_entry)* ')' '.'
+    : VARIABLE func_args '*' func_body? '.'
+    | VARIABLE func_args '*' '(' func_body? ')' '.'
+    ;
+
+func_body
+    : tuple_entry ((',' | ';') tuple_entry)* 
     ;
 
 directive
@@ -63,7 +67,7 @@ termlist
 /**********************Grammar Extention**********************/
 
 func_args
-    : '(' VARIABLE ( ',' VARIABLE)* ')'
+    : '(' (VARIABLE ( ',' VARIABLE)*) ? ')'
     ;
 
 call

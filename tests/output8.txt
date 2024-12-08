@@ -1,1 +1,0 @@
-(p_text (clause (term (atom is_ascending) ( (termlist (term (atom [ ]))) )) .) (clause (term (atom is_ascending) ( (termlist (term [ (termlist (term X)) ])) )) .) (clause (term (term (atom is_ascending) ( (termlist (term [ (termlist (term X)) | (term [ (termlist (term Y)) | (term Z) ]) ])) )) (operator_ :-) (term (term Y) (operator_ >=) (term X))) .) <EOF>)

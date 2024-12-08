@@ -2,9 +2,13 @@
 #include "Visitors.hpp"
 #include "prologLexer.h"
 #include "prologParser.h"
+#include <algorithm>
 #include <filesystem>
 #include <format>
 #include <fstream>
+#include <memory>
+#include <sstream>
+#include <util.h>
 #include <variant>
 
 namespace Prolog {
@@ -31,7 +35,7 @@ void Compiler::genProlog(prologParser& parser) {
 
     for (auto& stmtList : progList) {
         for (auto& stmt : stmtList) {
-             outputFile << stmt << " ";
+            outputFile << stmt << " ";
         }
         outputFile << '\n';
     }
@@ -71,6 +75,7 @@ void Compiler::varNumCheck(prologParser& parser) {
 void Compiler::compile(const std::filesystem::path& path, const std::set<Flag>& flags) {
     m_targetPath = path;
 
+
     std::ifstream targetFile{path};
 
     if (!targetFile) {
@@ -82,13 +87,29 @@ void Compiler::compile(const std::filesystem::path& path, const std::set<Flag>& 
     antlr4::CommonTokenStream tokens(&lexer);
     prologParser parser(&tokens);
 
-
-
     // PERF: Maybe we can change the implementation to some map: Flag -> Func.
     varNumCheck(parser);
     genAst(parser);
     genProlog(parser);
+}
 
+std::unique_ptr<prologParser> Compiler::parse(const std::variant<std::filesystem::path, std::string>& target) {
+    std::string str;
+    antlr4::ANTLRInputStream input;
+    if (auto* pPath = std::get_if<std::filesystem::path>(&target); pPath != nullptr) {
+        std::ifstream targetFile{*pPath};
+        if (!targetFile) {
+            std::cerr << std::format("Error opening the file: {}\n", pPath->string());
+        }
+        input.load(targetFile);
+    } else{
+        input.load(std::get<std::string>(target));
+    }
+
+
+    prologLexer lexer(&input);
+    antlr4::CommonTokenStream tokens(&lexer);
+    return std::make_unique<prologParser>(&tokens);
 }
 
 } // namespace Prolog

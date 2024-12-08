@@ -1,1 +1,0 @@
-(p_text (clause (term (atom has) ( (termlist (term (term X) (operator_ ,) (term [ (termlist (term X)) | (term Y) ]))) )) .) (clause (term (term (atom has) ( (termlist (term (term X) (operator_ ,) (term [ (termlist (term Z)) | (term Y) ]))) )) (operator_ :-) (term (atom has) ( (termlist (term (term X) (operator_ ,) (term Y))) ))) .) <EOF>)
