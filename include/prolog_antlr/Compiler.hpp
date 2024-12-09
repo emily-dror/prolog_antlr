@@ -34,8 +34,6 @@ public:
      */
     void compile(const std::filesystem::path& pathToTheFile, const std::set<Flag>& flags);
 
-    static std::unique_ptr<prologParser> parse(const std::variant<std::filesystem::path, std::string>&);
-
 private:
     std::filesystem::path m_targetPath;
 

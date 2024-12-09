@@ -41,32 +41,51 @@ static SyntaxErrorListener* syntaxTest(const std::filesystem::path& path) {
 }
 
 TEST(FunctionsWithEmptyStmts, Test) {
-    std::filesystem::path path = std::filesystem::current_path() / ("tests/FunctionsWithEmptyStmts.pl");
+    std::filesystem::path path = std::filesystem::current_path() / ("tests/SyntaxTests/FunctionsWithEmptyStmts.pl");
     auto* syntaxErrorListener = syntaxTest(path);
     EXPECT_EQ(syntaxErrorListener->isError(), false);
 }
 
 TEST(FunctionsTuples, Test) {
-    std::filesystem::path path = std::filesystem::current_path() / ("tests/E_FunctionsTuples.pl");
+    std::filesystem::path path = std::filesystem::current_path() / ("tests/SyntaxTests/FunctionsTuples.pl");
     auto* syntaxErrorListener = syntaxTest(path);
     EXPECT_EQ(syntaxErrorListener->isError(), true);
 }
 
-TEST(FunctionWithNoBody, Test) {
-    std::filesystem::path path = std::filesystem::current_path() / ("tests/FunctionsNoBody.pl");
+TEST(FunctionNoBody, Test) {
+    std::filesystem::path path = std::filesystem::current_path() / ("tests/SyntaxTests/FunctionsNoBody.pl");
     auto* syntaxErrorListener = syntaxTest(path);
     EXPECT_EQ(syntaxErrorListener->isError(), false);
 }
 
-TEST(FunctionWithNoArgs, Test) {
-    std::filesystem::path path = std::filesystem::current_path() / ("tests/FunctionsWithArgs.pl");
+TEST(FunctionNoArgs, Test) {
+    std::filesystem::path path = std::filesystem::current_path() / ("tests/SyntaxTests/FunctionsWithArgs.pl");
     auto* syntaxErrorListener = syntaxTest(path);
     EXPECT_EQ(syntaxErrorListener->isError(), false);
 }
 
 
-TEST(FunctionWithManyArguments, Test) {
-    std::filesystem::path path = std::filesystem::current_path() / ("tests/FunctionWithManyArguments.pl");
+TEST(FunctionManyArguments, Test) {
+    std::filesystem::path path = std::filesystem::current_path() / ("tests/SyntaxTests/FunctionWithManyArguments.pl");
+    auto* syntaxErrorListener = syntaxTest(path);
+    EXPECT_EQ(syntaxErrorListener->isError(), false);
+}
+
+
+TEST(FunctionsWrongVar, Test) {
+    std::filesystem::path path = std::filesystem::current_path() / ("tests/SyntaxTests/FunctionsWrongVar.pl");
+    auto* syntaxErrorListener = syntaxTest(path);
+    EXPECT_EQ(syntaxErrorListener->isError(), true);
+}
+
+TEST(FunctionsWithLocalStmt, Test) {
+    std::filesystem::path path = std::filesystem::current_path() / ("tests/SyntaxTests/FunctionsWithLocalStmt.pl");
+    auto* syntaxErrorListener = syntaxTest(path);
+    EXPECT_EQ(syntaxErrorListener->isError(), false);
+}
+
+TEST(FunctionsLocalStmt, Test) {
+    std::filesystem::path path = std::filesystem::current_path() / ("tests/SyntaxTests/FunctionsWithLocalStmt.pl");
     auto* syntaxErrorListener = syntaxTest(path);
     EXPECT_EQ(syntaxErrorListener->isError(), false);
 }

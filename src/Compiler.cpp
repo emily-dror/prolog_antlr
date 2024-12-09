@@ -93,23 +93,4 @@ void Compiler::compile(const std::filesystem::path& path, const std::set<Flag>& 
     genProlog(parser);
 }
 
-std::unique_ptr<prologParser> Compiler::parse(const std::variant<std::filesystem::path, std::string>& target) {
-    std::string str;
-    antlr4::ANTLRInputStream input;
-    if (auto* pPath = std::get_if<std::filesystem::path>(&target); pPath != nullptr) {
-        std::ifstream targetFile{*pPath};
-        if (!targetFile) {
-            std::cerr << std::format("Error opening the file: {}\n", pPath->string());
-        }
-        input.load(targetFile);
-    } else{
-        input.load(std::get<std::string>(target));
-    }
-
-
-    prologLexer lexer(&input);
-    antlr4::CommonTokenStream tokens(&lexer);
-    return std::make_unique<prologParser>(&tokens);
-}
-
 } // namespace Prolog
