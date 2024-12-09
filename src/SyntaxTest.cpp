@@ -2,12 +2,12 @@
 #include "Compiler.hpp"
 #include "Utils.hpp"
 #include "gtest.h"
+#include "prologLexer.h"
 #include "prologParser.h"
 #include <filesystem>
 
 class SyntaxErrorListener : public antlr4::BaseErrorListener {
 public:
-
     bool isError() const {
         return m_syntaxError;
     }
@@ -20,43 +20,53 @@ private:
     };
 };
 
+static SyntaxErrorListener* syntaxTest(const std::filesystem::path& path) {
+    antlr4::ANTLRInputStream input;
+    std::ifstream targetFile{path};
+    if (!targetFile) {
+        std::cerr << std::format("Error opening the file: {}\n", path.string());
+    }
+    input.load(targetFile);
 
-static SyntaxErrorListener* syntaxTest(const std::filesystem::path& path){
-    auto pParser = Prolog::Compiler::parse(path);
-    CHECK_NULL(pParser);
-    pParser->removeErrorListeners();
-    auto* syntaxErrorListener= new SyntaxErrorListener();
-    pParser->addErrorListener(syntaxErrorListener);
+    prologLexer lexer(&input);
+    antlr4::CommonTokenStream tokens(&lexer);
+    prologParser parser(&tokens);
+
+    parser.removeErrorListeners();
+    auto* syntaxErrorListener = new SyntaxErrorListener();
+    parser.addErrorListener(syntaxErrorListener);
+    parser.p_text();
+
     return syntaxErrorListener;
 }
 
-
 TEST(FunctionsWithEmptyStmts, Test) {
-    std::filesystem::path path = std::filesystem::current_path() /("tests/FunctionsWithEmptyStmts.pl");
+    std::filesystem::path path = std::filesystem::current_path() / ("tests/FunctionsWithEmptyStmts.pl");
     auto* syntaxErrorListener = syntaxTest(path);
     EXPECT_EQ(syntaxErrorListener->isError(), false);
 }
 
-TEST(FunctionWithNoBody, Test) {
-    std::filesystem::path path = std::filesystem::current_path() /("tests/FunctionsNoBody.pl");
-    auto* syntaxErrorListener = syntaxTest(path);
-    EXPECT_EQ(syntaxErrorListener->isError(), false);
-}
-
-TEST(FunctionWithNoArgs, Test){
-    std::filesystem::path path = std::filesystem::current_path() /("tests/FunctionsWithArgs.pl");
-    auto* syntaxErrorListener = syntaxTest(path);
-    EXPECT_EQ(syntaxErrorListener->isError(), false);
-}
-
-TEST(FunctionsTuples, Test){
-    std::filesystem::path path = std::filesystem::current_path() /("tests/E_FunctionsTuples.pl");
+TEST(FunctionsTuples, Test) {
+    std::filesystem::path path = std::filesystem::current_path() / ("tests/E_FunctionsTuples.pl");
     auto* syntaxErrorListener = syntaxTest(path);
     EXPECT_EQ(syntaxErrorListener->isError(), true);
 }
 
-TEST(FunctionWithManyArguments, Test){
-    std::filesystem::path path = std::filesystem::current_path() /("tests/FunctionWithManyArguments.pl");
+TEST(FunctionWithNoBody, Test) {
+    std::filesystem::path path = std::filesystem::current_path() / ("tests/FunctionsNoBody.pl");
+    auto* syntaxErrorListener = syntaxTest(path);
+    EXPECT_EQ(syntaxErrorListener->isError(), false);
+}
+
+TEST(FunctionWithNoArgs, Test) {
+    std::filesystem::path path = std::filesystem::current_path() / ("tests/FunctionsWithArgs.pl");
+    auto* syntaxErrorListener = syntaxTest(path);
+    EXPECT_EQ(syntaxErrorListener->isError(), false);
+}
+
+
+TEST(FunctionWithManyArguments, Test) {
+    std::filesystem::path path = std::filesystem::current_path() / ("tests/FunctionWithManyArguments.pl");
     auto* syntaxErrorListener = syntaxTest(path);
     EXPECT_EQ(syntaxErrorListener->isError(), false);
 }

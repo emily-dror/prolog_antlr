@@ -41,14 +41,6 @@ p_text
     : (func_def | directive | clause)* EOF
     ;
 
-func_def
-    : VARIABLE func_args '*' func_body? '.'
-    | VARIABLE func_args '*' '(' func_body? ')' '.'
-    ;
-
-func_body
-    : tuple_entry ((',' | ';') tuple_entry)* 
-    ;
 
 directive
     : ':-' term '.'
@@ -66,6 +58,14 @@ termlist
 
 /**********************Grammar Extention**********************/
 
+func_def
+    : VARIABLE func_args '*' func_body? '.'
+    ;
+
+func_body
+    : tuple_entry ((',' | ';') tuple_entry)* 
+    ;
+
 func_args
     : '(' (VARIABLE ( ',' VARIABLE)*) ? ')'
     ;
@@ -75,7 +75,7 @@ call
     ;
 
 tuple
-    : '(' (tuple_entry (',' tuple_entry)*)? ')' // tuple might be empty so the arglist is optional
+    : '(' (tuple_entry (',' tuple_entry)* )? ')' 
     ;
 
 tuple_entry    
@@ -95,7 +95,7 @@ term
     | '[' termlist ( '|' term)? ']'       # list_term
     | '{' termlist '}'                    # curly_bracketed_term
     | atom                                # atom_term
-    | call #func_call   /******* Extention *******/
+    | call                                #func_call   /******* Extention *******/
     ;
 
 /*****************************/

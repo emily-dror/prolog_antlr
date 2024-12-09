@@ -3,7 +3,7 @@
 # Compiler and Linker Options
 export CXX := clang++
 export GTEST_FLAGS := -lgtest -lgtest_main
-export CXXFLAGS := -Wall -std=c++2b $(GTEST_FLAGS)
+export CXXFLAGS := -Wall -std=c++2b $(GTEST_FLAGS) -g
 export ANTLR_CMD := antlr -Dlanguage=Cpp -visitor
 export GTEST_FLAGS := -lgtest -lgtest_main -pthread
 
