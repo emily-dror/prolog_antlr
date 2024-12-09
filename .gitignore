@@ -1,6 +1,6 @@
 /build/
 .DS_Store
-prolog_parser
+prog
 /.cache/
 build.out
 compiler_commands.json

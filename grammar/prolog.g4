@@ -59,7 +59,7 @@ termlist
 /**********************Grammar Extention**********************/
 
 func_def
-    : VARIABLE func_args '*' func_body? '.'
+    : VARIABLE func_args '*' (func_body | ('(' func_body')'))? '.'
     ;
 
 func_body
