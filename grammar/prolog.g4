@@ -58,22 +58,22 @@ termlist
 
 /**********************Grammar Extention**********************/
 
-func_def
-    : VARIABLE func_args '*' (func_body | ('(' func_body')'))? '.'
-    ;
+func_def : VARIABLE func_args '::' tuple; 
 
-func_body
-    : tuple_entry ((',' | ';') tuple_entry)* 
-    ;
+tuple: '(' (tuple_entry ((',' | ';') tuple_entry)*)?  ')';
 
-func_args
-    : '(' (VARIABLE ( ',' VARIABLE)*) ? ')'
-    ;
+(VARIABLE ( ',' VARIABLE)*) ? ')'
 
-call
-    : VARIABLE tuple
-    ;
+tuple_entry :- expresssion|binding;
+binding: VARIABLE '<-' expression; 
+expresssion :- tuple | term | invocation | VARIABLE; 
+invocation: VARIABLE tuple;
 
+
+% tuple(L); if L is a list of tuple_entries
+
+tuple([]).
+tuple(Head|Tail) :- tuple_entry(Tail), tuple_enries(Tail)).
 tuple
     : '(' (tuple_entry (',' tuple_entry)* )? ')' 
     ;
