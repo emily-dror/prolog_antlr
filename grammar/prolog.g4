@@ -47,7 +47,7 @@ directive
     ; // also 3.58
 
 clause
-    : term '.'
+    : term | tuple '.'
     ; // also 3.33
 
 // Abstract Syntax (6.3): terms formed from tokens
