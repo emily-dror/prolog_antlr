@@ -1,1 +1,0 @@
-(p_text (clause (term (atom is_acending) ( (termlist (term [ (termlist (term (term (integer 3)) (operator_ ,) (term (term (integer 3)) (operator_ ,) (term (integer 3))))) ])) <missing ')'>) .) <EOF>)

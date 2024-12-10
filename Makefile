@@ -2,15 +2,17 @@
 
 # Compiler and Linker Options
 export CXX := clang++
-export CXXFLAGS := -Wall -std=c++20
+export GTEST_FLAGS := -lgtest -lgtest_main
+export CXXFLAGS := -Wall -std=c++2b $(GTEST_FLAGS) -g
 export ANTLR_CMD := antlr -Dlanguage=Cpp -visitor
+export GTEST_FLAGS := -lgtest -lgtest_main -pthread
 
 export LD := $(CXX)
-export LD_FLAGS = -L $(LIB_DIR) -l $(DYLIB_NAME) -Wl,-rpath,@loader_path/$(LIB_DIR)
+export LD_FLAGS = -L $(LIB_DIR) -l $(DYLIB_NAME) $(GTEST_FLAGS) -Wl,-rpath,@loader_path/$(LIB_DIR)
 
 ################################################################################
 ### Project Paramaters
-TARGET := prolog_parser
+TARGET := prog 
 DYLIB_NAME := antlr4-runtime
 GRAMMAR_FILE = $(GRAMMAR_DIR)/prolog.g4
 
@@ -57,6 +59,7 @@ INCLUDE_DIRS := \
     -I $(ROOT)/include \
 	-I $(ROOT)/include/prolog_antlr \
     -I $(ROOT)/include/antlr4-runtime \
+    -I $(ROOT)/include/gtest \
 	-I $(BUILD_DIR)/include
 
 # Build Directory, Don't Change!!
@@ -114,7 +117,5 @@ clean:
 	$(verb) rm -rf $(TEST_DIR)/output*
 
 .PHONY: test
-test:
-	$(verb) rm -rf $(TEST_DIR)/output*
-	$(verb) echo "Running tests..."
-	$(verb) python3 run_tests.py
+test: $(TARGET)
+	$(verb) ./$(TARGET) --run-tests

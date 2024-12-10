@@ -2,8 +2,13 @@
 #include "Visitors.hpp"
 #include "prologLexer.h"
 #include "prologParser.h"
+#include <algorithm>
 #include <filesystem>
+#include <format>
 #include <fstream>
+#include <memory>
+#include <sstream>
+#include <util.h>
 #include <variant>
 
 namespace Prolog {
@@ -12,7 +17,11 @@ void Compiler::genProlog(prologParser& parser) {
     parser.reset();
     auto* programStartCtx = parser.p_text();
     Visitors::ProgramRestoreVisitor progRestoreV;
+    Visitors::MarkEmptyTuplesVisitor markEmptyTuplesV;
 
+    markEmptyTuplesV.visit(programStartCtx);
+
+    progRestoreV.emptyTuples = markEmptyTuplesV.emptyTuples;
     progRestoreV.visit(programStartCtx);
     auto progList = progRestoreV.programStmtList;
 
@@ -21,12 +30,12 @@ void Compiler::genProlog(prologParser& parser) {
     std::ofstream outputFile(outputPath);
 
     if (!outputFile) {
-        std::cerr << "Error opening the file: " << outputPath << '\n';
+        std::cerr << std::format("Error opening the file: {}\n", outputPath.string());
     }
 
     for (auto& stmtList : progList) {
         for (auto& stmt : stmtList) {
-            std::visit([&outputFile](auto* arg) { outputFile << arg->getText() << " "; }, stmt);
+            outputFile << stmt << " ";
         }
         outputFile << '\n';
     }
@@ -42,7 +51,7 @@ void Compiler::genAst(prologParser& parser) {
     std::ofstream outputFile(outputPath);
 
     if (!outputFile) {
-        std::cerr << "Error opening the file: " << outputPath << '\n';
+        std::cerr << std::format("Error opening the file: {}\n", outputPath.string());
     }
 
     outputFile << programStartCtx->toStringTree();
@@ -56,32 +65,27 @@ void Compiler::varNumCheck(prologParser& parser) {
 
     varV.visit(programStartCtx);
 
-    if (varV.invalidVars != 0) {
-        for (auto& [varName, _] : varV.varTbl) {
-            std::cerr << "Error: " << varName << " occured one time only." << '\n';
+    for (auto& [varName, count] : varV.varTbl) {
+        if (count != Visitors::VariableSemanticVisitor::VAR_COUNT) {
+            std::cerr << std::format("Error: {} must appear two times exacly\n", varName);
         }
-        exit(-1);
     }
 }
 
 void Compiler::compile(const std::filesystem::path& path, const std::set<Flag>& flags) {
     m_targetPath = path;
 
+
     std::ifstream targetFile{path};
 
     if (!targetFile) {
-        std::cerr << "Error opening the file: " << path << '\n';
+        std::cerr << std::format("Error opening the file: {}\n", path.string());
     }
-
-    // auto enabled = [&flags](Flag flag) { return flags.find(flag) != flags.end(); };
 
     antlr4::ANTLRInputStream input(targetFile);
     prologLexer lexer(&input);
     antlr4::CommonTokenStream tokens(&lexer);
     prologParser parser(&tokens);
-
-    // BUG: Using the parser changes some internal state in it, the reset()
-    // method might be the solution.
 
     // PERF: Maybe we can change the implementation to some map: Flag -> Func.
     varNumCheck(parser);

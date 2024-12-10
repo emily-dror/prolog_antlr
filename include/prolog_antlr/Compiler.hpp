@@ -3,9 +3,9 @@
 #include <filesystem>
 #include <fstream>
 #include <list>
+#include <variant>
 
 #include "Utils.hpp"
-#include "tree/ParseTree.h"
 
 #include "prologParser.h"
 namespace Prolog {
